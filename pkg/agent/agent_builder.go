@@ -125,7 +125,7 @@ func (b *AgentBuilder) AsBaseAgent() *AgentBuilder {
 
 // AsReasoningAgent sets the agent type to reasoning.
 func (b *AgentBuilder) AsReasoningAgent() *AgentBuilder {
-	b.agent_type = "reasoning"
+	b.agent_type = "tool"
 	return b
 }
 
@@ -149,8 +149,8 @@ func (b *AgentBuilder) Build() (Agent, error) {
 	switch b.agent_type {
 	case "base":
 		return NewBaseAgent(b.id, b.name, b.description, b.config), nil
-	case "reasoning":
-		return NewReasoningAgent(b.id, b.name, b.description, b.config), nil
+	case "tool":
+		return NewToolAgent(b.id, b.name, b.description, b.config), nil
 	default:
 		return nil, nil
 	}

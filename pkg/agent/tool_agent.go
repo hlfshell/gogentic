@@ -15,14 +15,14 @@ import (
 	"github.com/hlfshell/go-agents/pkg/model"
 )
 
-// ReasoningAgent is an implementation of the Agent interface that can use tools
-// and reasoning to accomplish tasks.
-type ReasoningAgent struct {
+// ToolAgent is an implementation of the Agent interface that can use
+// tools to accomplish tasks.
+type ToolAgent struct {
 	*BaseAgent
 }
 
-// NewReasoningAgent creates a new reasoning agent with the given configuration.
-func NewReasoningAgent(id, name, description string, config AgentConfig) *ReasoningAgent {
+// NewToolAgent creates a new tool agent with the given configuration.
+func NewToolAgent(id, name, description string, config AgentConfig) *ToolAgent {
 	// Set default values if not provided
 	if config.MaxIterations <= 0 {
 		config.MaxIterations = 10
@@ -35,15 +35,15 @@ func NewReasoningAgent(id, name, description string, config AgentConfig) *Reason
 	// Create the base agent
 	base_agent := NewBaseAgent(id, name, description, config)
 
-	// Create and return the reasoning agent
-	return &ReasoningAgent{
+	// Create and return the tool agent
+	return &ToolAgent{
 		BaseAgent: base_agent,
 	}
 }
 
 // Execute processes the given parameters and returns a result.
-// This implementation adds a reasoning loop for tool usage.
-func (a *ReasoningAgent) Execute(ctx context.Context, params AgentParameters) (AgentResult, error) {
+// This implementation adds a tool loop for tool usage.
+func (a *ToolAgent) Execute(ctx context.Context, params AgentParameters) (AgentResult, error) {
 	// Record execution start time
 	start_time := time.Now()
 	
@@ -95,7 +95,7 @@ func (a *ReasoningAgent) Execute(ctx context.Context, params AgentParameters) (A
 	// Initialize usage stats
 	usage_stats := model.UsageStats{}
 	
-	// Start the reasoning loop
+	// Start the tool loop
 	iterations := 0
 	tool_calls_count := 0
 	for iterations < a.config.MaxIterations {
@@ -278,8 +278,8 @@ func (a *ReasoningAgent) Execute(ctx context.Context, params AgentParameters) (A
 }
 
 // ProcessStream processes a user message and streams the response.
-// This implementation adds a reasoning loop for tool usage.
-func (a *ReasoningAgent) ProcessStream(ctx context.Context, message string, conversation Conversation, handler StreamHandler) error {
+// This implementation adds a tool loop for tool usage.
+func (a *ToolAgent) ProcessStream(ctx context.Context, message string, conversation Conversation, handler StreamHandler) error {
 	// Create a timeout context
 	timeout_ctx, cancel := context.WithTimeout(ctx, a.config.Timeout)
 	defer cancel()
@@ -295,7 +295,7 @@ func (a *ReasoningAgent) ProcessStream(ctx context.Context, message string, conv
 	conversation.Messages = append(conversation.Messages, user_message)
 	conversation.UpdatedAt = time.Now()
 
-	// Start the reasoning loop
+	// Start the tool loop
 	iterations := 0
 	for iterations < a.config.MaxIterations {
 		// Check if the context is done
